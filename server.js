@@ -19,333 +19,327 @@ if (process.env.GEMINI_API_KEY) {
     genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     model = genAI.getGenerativeModel({ model: "gemini-pro" });
     console.log('✅ Google Gemini AI initialized');
-} else {
-    console.log('⚠️  Gemini API key not found');
 }
 
-// AI Prompt Template
-const PROMPT_TEMPLATE = `You are an expert educator creating learning materials.
+// IMPROVED PROMPT FOR CLEAR EXPLANATIONS & REAL TASKS
+const LEARNING_PROMPT = `You are an expert educator. Create a comprehensive learning guide that helps students truly understand a topic.
 
 TOPIC: "{topic}"
 
-Create a comprehensive learning guide with:
-1. A CLEAR TITLE in Title Case
-2. A DETAILED EXPLANATION that breaks down the concept simply
-3. 4 PRACTICE TASKS with different difficulty levels (beginner, intermediate, advanced)
-4. Identify the EDUCATIONAL STREAM (cse, ece, science, math, commerce, arts, or general)
-5. Suggest a CATEGORY
-6. List 3 RELATED TOPICS
+IMPORTANT REQUIREMENTS:
+1. EXPLANATION MUST BE:
+   - Clear and easy to understand
+   - Break complex ideas into simple parts
+   - Use everyday examples and analogies
+   - Avoid jargon or explain it clearly
+   - Include real-world applications
 
-IMPORTANT: Respond ONLY with valid JSON in this exact format:
+2. TASKS MUST BE:
+   - Practical and actionable
+   - Build from simple to complex
+   - Focus on understanding, not memorization
+   - Include real-world scenarios
+   - Provide helpful hints that guide thinking
+
+3. STRUCTURE:
+   - Title
+   - Clear Explanation (with examples)
+   - 3 Practice Tasks (beginner → intermediate → advanced)
+   - Helpful hints for each task
+
+Respond in this EXACT JSON format:
 {
-    "title": "Proper Title Case",
-    "explanation": "Detailed explanation here...",
-    "tasks": [
-        {
-            "title": "Task title 1",
-            "description": "Clear instructions here",
-            "difficulty": "beginner",
-            "hint": "Helpful hint if needed"
-        },
-        {
-            "title": "Task title 2",
-            "description": "Clear instructions here",
-            "difficulty": "intermediate",
-            "hint": "Helpful hint if needed"
-        },
-        {
-            "title": "Task title 3", 
-            "description": "Clear instructions here",
-            "difficulty": "advanced",
-            "hint": "Helpful hint if needed"
-        },
-        {
-            "title": "Task title 4",
-            "description": "Clear instructions here",
-            "difficulty": "intermediate",
-            "hint": "Helpful hint if needed"
-        }
-    ],
-    "stream": "stream_name",
-    "category": "category_name",
-    "related_topics": ["Topic 1", "Topic 2", "Topic 3"]
+  "title": "Clear Title",
+  "explanation": "Detailed, understandable explanation with examples...",
+  "tasks": [
+    {
+      "title": "Practical task title",
+      "description": "Clear, actionable instructions",
+      "difficulty": "beginner",
+      "hint": "Helpful guidance, not just the answer"
+    },
+    {
+      "title": "Practical task title", 
+      "description": "Clear, actionable instructions",
+      "difficulty": "intermediate",
+      "hint": "Helpful guidance, not just the answer"
+    },
+    {
+      "title": "Practical task title",
+      "description": "Clear, actionable instructions", 
+      "difficulty": "advanced",
+      "hint": "Helpful guidance, not just the answer"
+    }
+  ]
 }
 
-Make tasks practical, engaging, and focused on understanding.`;
+Make learning engaging and effective!`;
 
-// Generate topic using Google Gemini AI
-async function generateTopicWithAI(topic) {
+// Generate quality learning content
+async function generateLearningContent(topic) {
     try {
-        console.log(`🤖 Gemini generating: ${topic}`);
+        console.log(`🎓 Generating learning guide for: ${topic}`);
         
-        const prompt = PROMPT_TEMPLATE.replace('{topic}', topic);
+        const prompt = LEARNING_PROMPT.replace('{topic}', topic);
         
-        // Call Gemini API
         const result = await model.generateContent(prompt);
         const response = await result.response;
         const text = response.text();
         
-        // Clean the response (remove markdown code blocks if present)
+        // Clean response
         let jsonText = text.trim();
-        if (jsonText.startsWith('```json')) {
-            jsonText = jsonText.replace(/```json\s*/, '').replace(/\s*```/, '');
-        } else if (jsonText.startsWith('```')) {
-            jsonText = jsonText.replace(/```\s*/, '').replace(/\s*```/, '');
-        }
+        jsonText = jsonText.replace(/```json\s*|\s*```|```/g, '');
         
-        // Parse JSON
         const data = JSON.parse(jsonText);
-        
-        // Add metadata
-        data.source = "gemini_ai";
         data.generated_at = new Date().toISOString();
-        data.ai_model = "gemini-pro";
-        
         return data;
         
     } catch (error) {
-        console.error('Gemini AI Error:', error);
-        
-        // Fallback response if AI fails
-        return getFallbackResponse(topic);
+        console.error('Generation error:', error);
+        return getFallbackLearningGuide(topic);
     }
 }
 
-// Fallback response
-function getFallbackResponse(topic) {
+// Quality fallback content
+function getFallbackLearningGuide(topic) {
+    const commonTopics = {
+        'python': {
+            title: 'Python Programming Basics',
+            explanation: `Python is a popular programming language known for its simplicity and readability. It's like giving clear instructions to a computer.
+
+Key concepts:
+1. **Variables**: Like labeled boxes that store information
+   Example: age = 25 (a box labeled "age" contains 25)
+
+2. **Functions**: Reusable sets of instructions
+   Example: def greet(name): return f"Hello, {name}!"
+
+3. **Loops**: Repeating actions
+   Example: for i in range(3): print(i) # Prints 0, 1, 2
+
+Real-world use: Web development, data analysis, automation, AI.`,
+            tasks: [
+                {
+                    title: 'Create your first program',
+                    description: 'Write a Python program that asks for your name and says "Hello, [Your Name]!"',
+                    difficulty: 'beginner',
+                    hint: 'Use input() to get name, then print() the greeting'
+                },
+                {
+                    title: 'Calculate average',
+                    description: 'Create a function that takes three test scores and returns the average score',
+                    difficulty: 'intermediate',
+                    hint: 'Average = sum of scores ÷ number of scores'
+                },
+                {
+                    title: 'Build a simple calculator',
+                    description: 'Make a calculator that can add, subtract, multiply, and divide based on user input',
+                    difficulty: 'advanced',
+                    hint: 'Use if/elif statements to choose operation based on user choice'
+                }
+            ]
+        },
+        'photosynthesis': {
+            title: 'Photosynthesis: How Plants Make Food',
+            explanation: `Photosynthesis is how plants use sunlight to make food (glucose) from carbon dioxide and water. Think of it as a plant's kitchen that runs on solar power!
+
+Process in simple terms:
+1. **Sunlight** hits leaves → captured by chlorophyll (green pigment)
+2. **Water** from roots + **Carbon dioxide** from air → combined using sunlight energy
+3. Produces: **Glucose** (plant food) + **Oxygen** (released into air)
+
+Chemical equation: 
+6CO₂ + 6H₂O + sunlight → C₆H₁₂O₆ + 6O₂
+
+Real importance: Produces oxygen we breathe, forms base of food chain.`,
+            tasks: [
+                {
+                    title: 'Identify photosynthesis components',
+                    description: 'List all inputs (what goes in) and outputs (what comes out) of photosynthesis',
+                    difficulty: 'beginner',
+                    hint: 'Look at the chemical equation: 6CO₂ + 6H₂O + sunlight → C₆H₁₂O₆ + 6O₂'
+                },
+                {
+                    title: 'Design an experiment',
+                    description: 'Design a simple experiment to prove plants need sunlight for photosynthesis',
+                    difficulty: 'intermediate',
+                    hint: 'Think about covering part of a leaf and observing differences'
+                },
+                {
+                    title: 'Calculate oxygen production',
+                    description: 'If a tree consumes 264g of CO₂ in a day, how much oxygen does it produce? (Atomic weights: C=12, O=16)',
+                    difficulty: 'advanced',
+                    hint: 'Use the balanced equation: For every 6 molecules of CO₂ consumed, 6 molecules of O₂ are produced'
+                }
+            ]
+        }
+    };
+    
+    // Check if topic matches common ones
+    const lowerTopic = topic.toLowerCase();
+    for (const [key, content] of Object.entries(commonTopics)) {
+        if (lowerTopic.includes(key)) {
+            return content;
+        }
+    }
+    
+    // Generic fallback
     return {
         title: topic.charAt(0).toUpperCase() + topic.slice(1),
-        explanation: `Let's explore "${topic}" together. This topic covers important concepts that are valuable to understand.\n\nStart with these steps:\n1. Research basic definitions from reliable sources\n2. Identify key principles and components\n3. Find real-world applications\n4. Practice with examples\n5. Teach someone else to reinforce learning`,
+        explanation: `Let's understand "${topic}" clearly:
+
+1. **Basic Concept**: Start with the fundamental idea
+2. **Key Components**: Break it into main parts
+3. **How It Works**: Step-by-step process
+4. **Real Examples**: Everyday applications
+5. **Why It Matters**: Practical importance
+
+Take your time with each concept. Understanding beats memorization.`,
         tasks: [
             {
-                title: "Research and define",
-                description: `Find 3 different definitions of "${topic}" from textbooks, websites, or videos`,
-                difficulty: "beginner",
-                hint: "Wikipedia, Khan Academy, and educational YouTube channels are good starting points"
+                title: 'Research and summarize',
+                description: `Find 2-3 reliable sources about "${topic}" and write a one-paragraph summary in your own words`,
+                difficulty: 'beginner',
+                hint: 'Try educational websites, textbooks, or reputable online resources'
             },
             {
-                title: "Identify key concepts",
-                description: `List the 5 most important concepts or formulas related to "${topic}"`,
-                difficulty: "intermediate",
-                hint: "Look for foundational principles that everything else builds upon"
+                title: 'Create a visual guide',
+                description: 'Make a diagram or flowchart that explains the main concepts of this topic',
+                difficulty: 'intermediate',
+                hint: 'Focus on relationships between concepts, not just definitions'
             },
             {
-                title: "Real-world application",
-                description: `Find 2-3 practical examples of how "${topic}" is used in industry or daily life`,
-                difficulty: "intermediate",
-                hint: "Search for case studies or news articles about applications"
-            },
-            {
-                title: "Create learning resource",
-                description: `Make a one-page cheat sheet explaining "${topic}" to a complete beginner`,
-                difficulty: "advanced",
-                hint: "Use simple language, diagrams, and avoid jargon"
+                title: 'Apply to real situation',
+                description: 'Find or create a real-world example where this knowledge would be useful',
+                difficulty: 'advanced',
+                hint: 'Think about practical problems this knowledge could solve'
             }
-        ],
-        stream: "general",
-        category: "concept",
-        related_topics: ["Fundamentals", "Advanced Concepts", "Practical Applications"],
-        source: "fallback",
-        note: "AI service temporarily unavailable - using fallback content"
+        ]
     };
 }
 
-// Rate limiting (Gemini free tier: 60 requests per minute)
-const requestHistory = [];
-const RATE_LIMIT = 60; // requests per minute
-const TIME_WINDOW = 60 * 1000; // 1 minute in milliseconds
+// Rate limiting
+const requests = [];
+const MAX_REQUESTS = 60;
+const WINDOW_MS = 60000;
 
-function checkRateLimit() {
+function canMakeRequest() {
     const now = Date.now();
+    
     // Remove old requests
-    while (requestHistory.length > 0 && requestHistory[0] < now - TIME_WINDOW) {
-        requestHistory.shift();
+    while (requests.length > 0 && requests[0] < now - WINDOW_MS) {
+        requests.shift();
     }
     
-    // Check if limit exceeded
-    if (requestHistory.length >= RATE_LIMIT) {
-        const oldest = requestHistory[0];
-        const waitTime = Math.ceil((oldest + TIME_WINDOW - now) / 1000);
-        throw new Error(`Rate limit exceeded. Please wait ${waitTime} seconds. Free tier: 60 requests/minute.`);
+    if (requests.length >= MAX_REQUESTS) {
+        return false;
     }
     
-    // Add current request
-    requestHistory.push(now);
+    requests.push(now);
     return true;
 }
 
-// Main API endpoint
-app.get('/api/topic', async (req, res) => {
+// Main learning endpoint
+app.get('/api/learn', async (req, res) => {
     try {
-        const { q } = req.query;
+        const { topic } = req.query;
         
-        if (!q || q.trim() === '') {
-            return res.status(400).json({ 
-                error: 'Please provide a topic to learn. Example: /api/topic?q=python+functions',
-                example_topics: [
-                    "machine learning basics",
-                    "quantum physics introduction", 
-                    "how to invest in stocks",
-                    "French revolution causes",
-                    "Python data structures"
-                ]
+        if (!topic || topic.trim().length < 2) {
+            return res.status(400).json({
+                error: 'Please provide a valid topic to learn',
+                example: '/api/learn?topic=python+functions'
             });
         }
         
-        const topic = q.trim();
+        const cleanTopic = topic.trim();
         
         // Check rate limit
-        try {
-            checkRateLimit();
-        } catch (rateError) {
+        if (!canMakeRequest()) {
             return res.status(429).json({
-                error: rateError.message,
-                limit: "60 requests per minute",
-                upgrade: "For higher limits, upgrade at https://makersuite.google.com"
+                error: 'Learning limit reached',
+                message: 'Free tier allows 60 requests per minute. Please wait a moment.',
+                limit: MAX_REQUESTS + ' requests/minute'
             });
         }
         
-        // Generate with Gemini AI
+        // Check AI availability
         if (!model) {
-            return res.status(503).json({ 
-                error: 'AI service not configured',
-                setup_guide: 'Add your Gemini API key to .env file: GEMINI_API_KEY=your_key_here',
-                get_key: 'Get free API key: https://makersuite.google.com/app/apikey',
-                fallback: 'Using fallback content instead'
+            return res.status(503).json({
+                error: 'Learning AI not ready',
+                solution: 'Add GEMINI_API_KEY to .env file',
+                get_key: 'https://makersuite.google.com/app/apikey'
             });
         }
         
-        console.log(`🔍 Processing: "${topic}"`);
-        const aiResponse = await generateTopicWithAI(topic);
+        // Generate learning content
+        const learningGuide = await generateLearningContent(cleanTopic);
         
-        // Add rate limit info
-        aiResponse.rate_limit = {
-            remaining: RATE_LIMIT - requestHistory.length,
-            reset_in: "1 minute",
-            note: "Google Gemini Free Tier: 60 requests per minute"
-        };
-        
-        res.json(aiResponse);
+        res.json({
+            success: true,
+            topic: cleanTopic,
+            guide: learningGuide,
+            tips: [
+                'Read the explanation carefully',
+                'Start with beginner task',
+                'Use hints when stuck',
+                'Practice regularly'
+            ]
+        });
         
     } catch (error) {
-        console.error('API Error:', error);
+        console.error('Learning endpoint error:', error);
         
-        // Provide helpful error messages
-        if (error.message.includes('API key not valid')) {
-            return res.status(401).json({
-                error: 'Invalid Gemini API Key',
-                solution: '1. Get key from https://makersuite.google.com/app/apikey\n2. Add to .env: GEMINI_API_KEY=your_key_here\n3. Restart server'
-            });
-        }
-        
-        if (error.message.includes('quota')) {
-            return res.status(429).json({
-                error: 'API quota exceeded',
-                solution: 'Free tier: 60 requests per minute. Wait a minute or upgrade your plan.'
-            });
-        }
-        
-        res.status(500).json({ 
-            error: 'Failed to generate learning materials',
-            message: process.env.NODE_ENV === 'development' ? error.message : undefined,
-            fallback: getFallbackResponse(req.query.q || 'general topic')
+        res.status(500).json({
+            error: 'Failed to create learning guide',
+            fallback: getFallbackLearningGuide(req.query.topic || 'general topic'),
+            message: 'Try again with a different topic'
         });
     }
 });
 
-// API information endpoint
-app.get('/api/info', (req, res) => {
-    res.json({
-        service: "LearnLab AI",
-        version: "2.0.0",
-        ai_provider: "Google Gemini",
-        ai_model: "gemini-pro",
-        features: [
-            "AI-generated explanations",
-            "Practice tasks with hints",
-            "Multiple difficulty levels",
-            "Related topic suggestions",
-            "Rate limited: 60 req/min (free tier)"
-        ],
-        usage: {
-            endpoint: "GET /api/topic?q=your+topic",
-            example: "http://localhost:3000/api/topic?q=machine+learning",
-            rate_limit: "60 requests per minute"
-        },
-        setup_guide: "Add GEMINI_API_KEY to .env file",
-        get_key: "https://makersuite.google.com/app/apikey"
-    });
-});
-
-// Health check
+// Simple health check
 app.get('/api/health', (req, res) => {
-    res.json({ 
+    res.json({
         status: 'healthy',
-        ai_configured: !!model,
-        timestamp: new Date().toISOString(),
-        uptime: process.uptime(),
-        rate_limit: {
-            current: requestHistory.length,
-            limit: RATE_LIMIT,
-            remaining: RATE_LIMIT - requestHistory.length
-        }
+        ai: model ? 'ready' : 'not configured',
+        requests_this_minute: requests.length,
+        limit: MAX_REQUESTS + ' per minute'
     });
 });
 
-// Frontend
+// Serve frontend
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
-});
-
-// Handle 404
-app.use((req, res) => {
-    res.status(404).json({ 
-        error: 'Endpoint not found',
-        available: [
-            'GET /',
-            'GET /api/topic?q=your+topic',
-            'GET /api/health',
-            'GET /api/info'
-        ]
-    });
 });
 
 // Start server
 app.listen(PORT, () => {
     console.log(`
-    🚀 LearnLab with Google Gemini AI
-    ============================================
-    📍 Local:       http://localhost:${PORT}
-    🤖 AI:          ${model ? 'READY' : 'NOT CONFIGURED'}
-    🔑 API Key:     ${process.env.GEMINI_API_KEY ? '✓ Configured' : '✗ Missing'}
-    📊 Rate Limit:  60 requests/minute (free tier)
-    ============================================
+    🎓 LEARNLAB - Clear Learning Platform
+    =====================================
+    📚 URL: http://localhost:${PORT}
+    🤖 AI: ${model ? 'Ready for teaching' : 'Setup needed'}
+    ⚡ Limit: ${MAX_REQUESTS} requests/minute
     
     ${!model ? `
-    🔧 SETUP REQUIRED:
-    1. Your API Key: ${process.env.GEMINI_API_KEY || 'Not found in .env'}
-    2. Add to .env: GEMINI_API_KEY=AIzaSyClk17kaxNmSI0mnPHBNEfGRpqM8B0_AR4
-    3. Restart server: npm start
-    ` : '✅ Ready to learn! Try searching any topic.'}
+    🔧 SETUP:
+    1. Get free key: https://makersuite.google.com/app/apikey
+    2. Add to .env: GEMINI_API_KEY=your_key
+    3. Restart server
+    ` : '✅ Ready! Try learning something new!'}
     
-    💡 EXAMPLE SEARCHES:
+    💡 EXAMPLE TOPICS:
+    • python functions
+    • photosynthesis 
     • machine learning basics
-    • how photosynthesis works
-    • Python functions tutorial  
-    • supply and demand economics
-    • French revolution summary
-    • quantum physics introduction
-    • how to invest in stocks
-    • cooking pasta properly
-    
-    📈 API STATUS: ${requestHistory.length}/60 requests this minute
+    • how computers work
+    • supply and demand
     `);
 });
 
-// Graceful shutdown
+// Handle shutdown
 process.on('SIGINT', () => {
-    console.log('\n🛑 Shutting down LearnLab AI...');
-    console.log(`📊 Total requests this session: ${requestHistory.length}`);
-    console.log('👋 Server stopped');
+    console.log('\n📚 Closing LearnLab...');
+    console.log(`Total learning sessions: ${requests.length}`);
     process.exit(0);
 });
