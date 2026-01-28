@@ -3,26 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LearnLab - Clear Explanations & Real Practice</title>
+    <title>LearnLab - AI-Powered Learning for Any Topic</title>
     <style>
-        /* Clean, focused styles */
+        /* Modern, clean design */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
         
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --radius: 8px;
+        }
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
-            color: #333;
-            background: #f8f9fa;
+            color: var(--dark);
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
             min-height: 100vh;
             padding: 20px;
         }
         
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
         }
         
@@ -30,102 +44,143 @@
         header {
             text-align: center;
             margin-bottom: 40px;
-            padding: 30px 0;
+            padding: 40px 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
         }
         
         h1 {
-            color: #1a73e8;
-            margin-bottom: 10px;
             font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 10px;
         }
         
         .subtitle {
-            color: #5f6368;
+            color: var(--gray);
             font-size: 1.1rem;
             max-width: 600px;
             margin: 0 auto;
         }
         
-        /* Search */
-        .search-box {
+        /* Search Section */
+        .search-section {
             background: white;
             padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
             margin-bottom: 30px;
         }
         
-        input[type="text"] {
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        #topicInput {
             width: 100%;
             padding: 16px 20px;
             font-size: 1.1rem;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            margin-bottom: 15px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            outline: none;
             transition: border-color 0.3s;
         }
         
-        input[type="text"]:focus {
-            outline: none;
-            border-color: #1a73e8;
+        #topicInput:focus {
+            border-color: var(--primary);
         }
         
-        button {
+        .search-btn {
             width: 100%;
             padding: 16px;
-            background: #1a73e8;
+            background: var(--primary);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: var(--radius);
             font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
             transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
         
-        button:hover {
-            background: #0d62d9;
+        .search-btn:hover {
+            background: var(--primary-dark);
         }
         
-        button:disabled {
-            background: #ccc;
+        .search-btn:disabled {
+            background: var(--gray);
             cursor: not-allowed;
         }
         
         .examples {
             margin-top: 20px;
-            color: #5f6368;
-            font-size: 0.95rem;
+        }
+        
+        .examples p {
+            color: var(--gray);
+            margin-bottom: 10px;
         }
         
         .example-tags {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
-            margin-top: 10px;
         }
         
         .example-tag {
-            background: #e8f0fe;
-            color: #1a73e8;
+            background: var(--light);
+            color: var(--primary);
             padding: 8px 16px;
             border-radius: 20px;
-            cursor: pointer;
             font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid var(--border);
+        }
+        
+        .example-tag:hover {
+            background: var(--primary);
+            color: white;
         }
         
         /* Loading */
         .loading {
-            text-align: center;
+            background: white;
             padding: 40px;
+            border-radius: var(--radius);
+            text-align: center;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
             display: none;
         }
         
         .spinner {
             width: 50px;
             height: 50px;
-            border: 4px solid #e8f0fe;
-            border-top: 4px solid #1a73e8;
+            border: 4px solid var(--border);
+            border-top: 4px solid var(--primary);
             border-radius: 50%;
             margin: 0 auto 20px;
             animation: spin 1s linear infinite;
@@ -138,23 +193,24 @@
         
         /* Error */
         .error {
-            background: #fce8e6;
-            color: #c5221f;
+            background: #fee;
+            color: var(--danger);
             padding: 20px;
-            border-radius: 8px;
+            border-radius: var(--radius);
             margin-bottom: 20px;
             display: none;
-            border-left: 4px solid #c5221f;
+            border-left: 4px solid var(--danger);
         }
         
-        /* Learning Guide */
+        /* Guide */
         .guide {
             background: white;
-            border-radius: 12px;
-            padding: 40px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
             display: none;
             animation: fadeIn 0.5s ease;
+            margin-bottom: 30px;
         }
         
         @keyframes fadeIn {
@@ -163,45 +219,142 @@
         }
         
         .guide-header {
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #f1f3f4;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 30px;
         }
         
         .guide-title {
-            color: #1a73e8;
-            font-size: 2rem;
+            font-size: 1.8rem;
             margin-bottom: 10px;
+        }
+        
+        .guide-source {
+            opacity: 0.9;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .guide-content {
+            padding: 30px;
         }
         
         /* Explanation */
         .explanation {
-            background: #f8f9fa;
-            padding: 25px;
-            border-radius: 8px;
             margin-bottom: 40px;
-            line-height: 1.8;
         }
         
         .explanation h3 {
-            color: #1a73e8;
-            margin-bottom: 15px;
+            color: var(--primary);
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
             gap: 10px;
         }
         
-        .explanation p {
+        .explanation-content {
+            background: var(--light);
+            padding: 25px;
+            border-radius: var(--radius);
+            line-height: 1.8;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .explanation-content h1,
+        .explanation-content h2,
+        .explanation-content h3 {
+            color: var(--dark);
+            margin-top: 20px;
             margin-bottom: 15px;
         }
         
-        .explanation p:last-child {
-            margin-bottom: 0;
+        .explanation-content h1 {
+            font-size: 1.8rem;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+        }
+        
+        .explanation-content h2 {
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+        }
+        
+        .explanation-content h3 {
+            font-size: 1.3rem;
+            color: var(--primary);
+        }
+        
+        .explanation-content p {
+            margin-bottom: 15px;
+        }
+        
+        .explanation-content ul,
+        .explanation-content ol {
+            margin-left: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .explanation-content li {
+            margin-bottom: 8px;
+            position: relative;
+        }
+        
+        .explanation-content ul li::before {
+            content: "•";
+            color: var(--primary);
+            font-weight: bold;
+            position: absolute;
+            left: -15px;
+        }
+        
+        .explanation-content ol {
+            counter-reset: item;
+        }
+        
+        .explanation-content ol li {
+            counter-increment: item;
+        }
+        
+        .explanation-content ol li::before {
+            content: counter(item) ".";
+            color: var(--primary);
+            font-weight: bold;
+            position: absolute;
+            left: -20px;
+        }
+        
+        .explanation-content code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .explanation-content pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: var(--radius);
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            line-height: 1.5;
+        }
+        
+        .explanation-content pre code {
+            background: none;
+            padding: 0;
+            border-radius: 0;
         }
         
         /* Tasks */
         .tasks h3 {
-            color: #1a73e8;
+            color: var(--primary);
             margin-bottom: 25px;
             display: flex;
             align-items: center;
@@ -211,21 +364,36 @@
         .task-list {
             display: flex;
             flex-direction: column;
-            gap: 25px;
+            gap: 20px;
         }
         
         .task {
-            border: 1px solid #e8f0fe;
-            border-radius: 8px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
             padding: 25px;
             position: relative;
-            transition: transform 0.3s;
+            transition: all 0.3s;
+            background: white;
         }
         
         .task:hover {
             transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow);
         }
+        
+        .task::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            border-radius: var(--radius) 0 0 var(--radius);
+        }
+        
+        .task.beginner::before { background: var(--success); }
+        .task.intermediate::before { background: var(--warning); }
+        .task.advanced::before { background: var(--danger); }
         
         .task-header {
             display: flex;
@@ -235,7 +403,7 @@
         }
         
         .task-number {
-            color: #5f6368;
+            color: var(--gray);
             font-weight: 600;
         }
         
@@ -244,58 +412,86 @@
             font-weight: 700;
             padding: 4px 12px;
             border-radius: 20px;
+            text-transform: uppercase;
         }
         
-        .beginner { background: #e6f4ea; color: #137333; }
-        .intermediate { background: #fef7e0; color: #b06000; }
-        .advanced { background: #fce8e6; color: #c5221f; }
+        .beginner .difficulty { background: #d1fae5; color: #065f46; }
+        .intermediate .difficulty { background: #fef3c7; color: #92400e; }
+        .advanced .difficulty { background: #fee2e2; color: #991b1b; }
         
         .task-title {
             font-size: 1.2rem;
             font-weight: 600;
             margin-bottom: 15px;
-            color: #202124;
+            color: var(--dark);
         }
         
         .task-description {
-            color: #5f6368;
+            color: var(--gray);
             margin-bottom: 20px;
             line-height: 1.7;
         }
         
         .hint {
-            background: #f0f6ff;
+            background: #f0f9ff;
             padding: 15px;
-            border-radius: 6px;
-            border-left: 4px solid #1a73e8;
-            font-size: 0.95rem;
-            color: #5f6368;
+            border-radius: var(--radius);
+            border-left: 4px solid var(--primary);
+            margin-top: 10px;
         }
         
         .hint strong {
-            color: #1a73e8;
+            color: var(--primary);
         }
         
-        /* Tips */
-        .tips {
-            background: #e8f0fe;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 40px;
+        /* Rate Limit Info */
+        .rate-limit {
+            margin-top: 30px;
+            padding: 15px;
+            background: var(--light);
+            border-radius: var(--radius);
+            font-size: 0.9rem;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
-        .tips h3 {
-            color: #1a73e8;
-            margin-bottom: 10px;
+        .rate-limit-bar {
+            flex-grow: 1;
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
         }
         
-        .tips ul {
-            padding-left: 20px;
-            color: #5f6368;
+        .rate-limit-fill {
+            height: 100%;
+            background: var(--success);
+            transition: width 0.3s;
         }
         
-        .tips li {
-            margin-bottom: 8px;
+        /* Welcome */
+        .welcome {
+            background: white;
+            padding: 40px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        
+        .welcome h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .welcome p {
+            color: var(--gray);
+            margin-bottom: 25px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.7;
         }
         
         /* Footer */
@@ -303,8 +499,9 @@
             text-align: center;
             margin-top: 40px;
             padding: 20px;
-            color: #5f6368;
+            color: var(--gray);
             font-size: 0.9rem;
+            border-top: 1px solid var(--border);
         }
         
         /* Responsive */
@@ -313,17 +510,43 @@
                 padding: 0 10px;
             }
             
-            .search-box, .guide {
-                padding: 20px;
+            header {
+                padding: 20px 0;
+                margin-bottom: 20px;
             }
             
             h1 {
                 font-size: 2rem;
             }
             
+            .logo-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+            
+            .search-section,
+            .guide-content,
+            .welcome {
+                padding: 20px;
+            }
+            
             .guide-title {
                 font-size: 1.5rem;
             }
+            
+            .example-tags {
+                justify-content: center;
+            }
+            
+            .task {
+                padding: 20px;
+            }
+        }
+        
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
@@ -331,23 +554,32 @@
     <div class="container">
         <!-- Header -->
         <header>
-            <h1>LearnLab</h1>
-            <p class="subtitle">Clear explanations & real practice tasks. Understand anything properly.</p>
+            <div class="logo">
+                <div class="logo-icon">🎓</div>
+                <div>
+                    <h1>LearnLab</h1>
+                    <p class="subtitle">AI-powered learning for any topic. Get clear explanations with practical tasks.</p>
+                </div>
+            </div>
         </header>
         
-        <!-- Search Box -->
-        <div class="search-box">
-            <input type="text" id="topicInput" placeholder="What do you want to understand clearly?">
-            <button id="learnBtn" onclick="learnTopic()">Get Clear Explanation →</button>
+        <!-- Search Section -->
+        <div class="search-section">
+            <div class="search-box">
+                <input type="text" id="topicInput" placeholder="What do you want to learn? Try 'python functions', 'machine learning', or any topic...">
+            </div>
+            <button class="search-btn" id="learnBtn" onclick="learnTopic()">
+                <span>🎯 Get Learning Guide</span>
+            </button>
             
             <div class="examples">
-                <p>Try: </p>
+                <p>Try these examples:</p>
                 <div class="example-tags">
-                    <div class="example-tag" onclick="searchExample('python functions')">Python Functions</div>
-                    <div class="example-tag" onclick="searchExample('photosynthesis')">Photosynthesis</div>
-                    <div class="example-tag" onclick="searchExample('machine learning basics')">Machine Learning</div>
-                    <div class="example-tag" onclick="searchExample('how computers work')">How Computers Work</div>
-                    <div class="example-tag" onclick="searchExample('supply and demand')">Supply & Demand</div>
+                    <div class="example-tag" onclick="searchExample('python programming')">Python Programming</div>
+                    <div class="example-tag" onclick="searchExample('machine learning')">Machine Learning</div>
+                    <div class="example-tag" onclick="searchExample('database design')">Database Design</div>
+                    <div class="example-tag" onclick="searchExample('web development')">Web Development</div>
+                    <div class="example-tag" onclick="searchExample('artificial intelligence')">Artificial Intelligence</div>
                 </div>
             </div>
         </div>
@@ -355,7 +587,8 @@
         <!-- Loading -->
         <div class="loading" id="loading">
             <div class="spinner"></div>
-            <p>Creating clear learning guide...</p>
+            <p>AI is creating your personalized learning guide...</p>
+            <p style="font-size: 0.9rem; color: var(--gray); margin-top: 10px;">This may take 10-20 seconds</p>
         </div>
         
         <!-- Error -->
@@ -363,73 +596,26 @@
         
         <!-- Learning Guide -->
         <div class="guide" id="guide">
-            <!-- Content will be loaded here -->
+            <!-- AI content will load here -->
         </div>
         
         <!-- Welcome Message -->
-        <div class="guide" id="welcomeGuide">
-            <div class="guide-header">
-                <h2 class="guide-title">Welcome to LearnLab</h2>
-            </div>
-            
-            <div class="explanation">
-                <h3>🎯 How to Learn Effectively</h3>
-                <p><strong>LearnLab helps you truly understand topics</strong>, not just memorize facts.</p>
-                
-                <p><strong>1. Clear Explanations:</strong> We break complex topics into simple, understandable parts with real examples.</p>
-                
-                <p><strong>2. Practical Tasks:</strong> Practice with real-world problems that build your understanding step by step.</p>
-                
-                <p><strong>3. Helpful Hints:</strong> Get guidance when you're stuck, not just answers.</p>
-            </div>
-            
-            <div class="tasks">
-                <h3>📚 Example Learning Topics</h3>
-                <div class="task-list">
-                    <div class="task">
-                        <div class="task-header">
-                            <span class="task-number">Programming</span>
-                            <span class="difficulty beginner">Beginner</span>
-                        </div>
-                        <div class="task-title">Python Functions Explained Clearly</div>
-                        <div class="task-description">Learn what functions are, why they matter, and how to use them with practical examples.</div>
-                    </div>
-                    
-                    <div class="task">
-                        <div class="task-header">
-                            <span class="task-number">Science</span>
-                            <span class="difficulty intermediate">Intermediate</span>
-                        </div>
-                        <div class="task-title">Photosynthesis Made Simple</div>
-                        <div class="task-description">Understand how plants make food, with clear analogies and real-world importance.</div>
-                    </div>
-                    
-                    <div class="task">
-                        <div class="task-header">
-                            <span class="task-number">Technology</span>
-                            <span class="difficulty advanced">Advanced</span>
-                        </div>
-                        <div class="task-title">Machine Learning Fundamentals</div>
-                        <div class="task-description">Learn core ML concepts with practical implementation tasks.</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="tips">
-                <h3>💡 Getting Started</h3>
-                <ul>
-                    <li>Type any topic you want to understand</li>
-                    <li>Read the explanation carefully</li>
-                    <li>Start with beginner tasks</li>
-                    <li>Use hints when you need help</li>
-                    <li>Practice regularly for best results</li>
-                </ul>
+        <div class="welcome" id="welcome">
+            <h2>🎓 Welcome to LearnLab!</h2>
+            <p>Learn anything with AI-powered explanations and practical tasks. Just type any topic you want to understand.</p>
+            <p style="margin-top: 15px;"><strong>How it works:</strong></p>
+            <p style="font-size: 0.95rem;">1. Enter any topic you want to learn<br>2. AI generates a detailed explanation<br>3. Get practical tasks to apply your knowledge<br>4. Progress from beginner to advanced</p>
+            <div class="example-tags" style="justify-content: center; margin-top: 25px;">
+                <div class="example-tag" onclick="searchExample('how to learn programming')">How to Learn Programming</div>
+                <div class="example-tag" onclick="searchExample('data science basics')">Data Science Basics</div>
+                <div class="example-tag" onclick="searchExample('cloud computing')">Cloud Computing</div>
             </div>
         </div>
         
         <!-- Footer -->
         <footer>
-            <p>LearnLab • Clear Learning • Real Practice • Powered by Google Gemini AI</p>
+            <p>LearnLab • AI-Powered Learning • Practice Makes Perfect</p>
+            <p style="margin-top: 5px; font-size: 0.8rem;">Powered by Google Gemini AI • <span id="apiStatus">API: Not connected</span></p>
         </footer>
     </div>
 
@@ -440,24 +626,28 @@
         const loading = document.getElementById('loading');
         const error = document.getElementById('error');
         const guide = document.getElementById('guide');
-        const welcomeGuide = document.getElementById('welcomeGuide');
+        const welcome = document.getElementById('welcome');
+        const apiStatus = document.getElementById('apiStatus');
         
-        // Examples for placeholder
-        const examples = [
-            "python functions with examples",
-            "photosynthesis step by step", 
-            "how machine learning works",
-            "supply and demand explained",
-            "what is blockchain technology",
-            "basics of web development",
-            "how to learn programming",
-            "quantum computing for beginners"
-        ];
+        // API configuration
+        const API_URL = 'http://localhost:3000';
         
-        // Set random placeholder
-        function setRandomPlaceholder() {
-            const randomExample = examples[Math.floor(Math.random() * examples.length)];
-            topicInput.placeholder = `e.g., "${randomExample}"`;
+        // Check API connection on load
+        async function checkApiConnection() {
+            try {
+                const response = await fetch(`${API_URL}/health`);
+                if (response.ok) {
+                    apiStatus.textContent = 'API: Connected ✅';
+                    apiStatus.style.color = '#10b981';
+                } else {
+                    apiStatus.textContent = 'API: Error ❌';
+                    apiStatus.style.color = '#ef4444';
+                }
+            } catch (err) {
+                apiStatus.textContent = 'API: Not connected ❌';
+                apiStatus.style.color = '#ef4444';
+                console.warn('API server not running. Make sure to start the backend server.');
+            }
         }
         
         // Learn a topic
@@ -465,38 +655,37 @@
             const topic = topicInput.value.trim();
             
             if (!topic || topic.length < 2) {
-                showError('Please enter a topic you want to understand');
+                showError('Please enter a topic to learn (at least 2 characters)');
                 topicInput.focus();
                 return;
             }
             
-            // Show loading, hide others
+            // Update UI
             loading.style.display = 'block';
             error.style.display = 'none';
             guide.style.display = 'none';
-            welcomeGuide.style.display = 'none';
+            welcome.style.display = 'none';
             
             // Disable button
             learnBtn.disabled = true;
-            learnBtn.textContent = 'Creating learning guide...';
+            learnBtn.innerHTML = '<span>🤖 AI Thinking...</span>';
             
             try {
                 console.log(`Learning: "${topic}"`);
                 
                 // Call API
-                const response = await fetch(`http://localhost:3000/api/learn?topic=${encodeURIComponent(topic)}`);
+                const response = await fetch(`${API_URL}/api/learn?topic=${encodeURIComponent(topic)}`);
                 const data = await response.json();
                 
                 if (!response.ok) {
                     if (response.status === 429) {
-                        throw new Error('Learning limit reached. Free tier: 60 requests/minute. Wait a moment.');
+                        throw new Error(`Rate limit: ${data.rate_limit?.current || 30} requests/minute. Wait a moment.`);
                     }
-                    throw new Error(data.error || 'Failed to create learning guide');
+                    throw new Error(data.error || `Server error: ${response.status}`);
                 }
                 
                 // Display learning guide
                 displayLearningGuide(data);
-                error.style.display = 'none';
                 
             } catch (err) {
                 console.error('Error:', err);
@@ -504,85 +693,214 @@
             } finally {
                 loading.style.display = 'none';
                 learnBtn.disabled = false;
-                learnBtn.textContent = 'Get Clear Explanation →';
+                learnBtn.innerHTML = '<span>🎯 Get Learning Guide</span>';
             }
         }
         
         // Display learning guide
         function displayLearningGuide(data) {
-            const guideData = data.guide || data.fallback;
+            const guideData = data.guide;
+            
+            // Create source indicator with icon
+            let sourceIcon = '🤖';
+            let sourceText = 'AI-Generated Content';
+            
+            if (data.source === 'enhanced_local') {
+                sourceIcon = '📚';
+                sourceText = 'Enhanced Learning Guide';
+            } else if (data.fallback) {
+                sourceIcon = '⚠️';
+                sourceText = 'Fallback Content';
+            }
             
             guide.innerHTML = `
                 <div class="guide-header">
                     <h2 class="guide-title">${guideData.title}</h2>
+                    <div class="guide-source">
+                        <span>${sourceIcon}</span>
+                        <span>${sourceText} • ${data.topic}</span>
+                    </div>
                 </div>
                 
-                <div class="explanation">
-                    <h3>📖 Clear Explanation</h3>
-                    ${formatExplanation(guideData.explanation)}
-                </div>
-                
-                <div class="tasks">
-                    <h3>✅ Practice Tasks</h3>
-                    <div class="task-list">
-                        ${guideData.tasks.map((task, index) => `
-                            <div class="task">
-                                <div class="task-header">
-                                    <span class="task-number">Task ${index + 1}</span>
-                                    <span class="difficulty ${task.difficulty}">${task.difficulty}</span>
-                                </div>
-                                <div class="task-title">${task.title}</div>
-                                <div class="task-description">${task.description}</div>
-                                ${task.hint ? `
-                                    <div class="hint">
-                                        <strong>💡 Hint:</strong> ${task.hint}
+                <div class="guide-content">
+                    <div class="explanation">
+                        <h3>📚 Detailed Explanation</h3>
+                        <div class="explanation-content" id="explanationContent">
+                            ${formatExplanation(guideData.explanation)}
+                        </div>
+                    </div>
+                    
+                    <div class="tasks">
+                        <h3>✅ Practice Tasks</h3>
+                        <div class="task-list">
+                            ${guideData.tasks.map((task, index) => `
+                                <div class="task ${task.difficulty}">
+                                    <div class="task-header">
+                                        <span class="task-number">Task ${index + 1}</span>
+                                        <span class="difficulty">${task.difficulty}</span>
                                     </div>
-                                ` : ''}
+                                    <div class="task-title">${task.title}</div>
+                                    <div class="task-description">${task.description}</div>
+                                    ${task.hint ? `
+                                        <div class="hint">
+                                            <strong>💡 Hint:</strong> ${task.hint}
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    ${data.rate_limit ? `
+                        <div class="rate-limit">
+                            <span>📊 API Usage:</span>
+                            <div class="rate-limit-bar">
+                                <div class="rate-limit-fill" style="width: ${(data.rate_limit.current / data.rate_limit.limit) * 100}%"></div>
                             </div>
-                        `).join('')}
-                    </div>
+                            <span>${data.rate_limit.remaining} requests remaining this minute</span>
+                        </div>
+                    ` : ''}
                 </div>
-                
-                ${data.tips ? `
-                    <div class="tips">
-                        <h3>💡 Learning Tips</h3>
-                        <ul>
-                            ${data.tips.map(tip => `<li>${tip}</li>`).join('')}
-                        </ul>
-                    </div>
-                ` : ''}
             `;
             
             guide.style.display = 'block';
-            welcomeGuide.style.display = 'none';
+            welcome.style.display = 'none';
             
             // Scroll to guide
             guide.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            // Add syntax highlighting to code blocks
+            highlightCodeBlocks();
         }
         
-        // Format explanation text
+        // Format explanation (preserve markdown-like formatting)
         function formatExplanation(text) {
-            if (!text) return '<p>Explanation not available.</p>';
+            if (!text) return '<p>No explanation available.</p>';
             
-            // Split by paragraphs
-            const paragraphs = text.split('\n\n');
+            let formatted = text;
             
-            if (paragraphs.length <= 1) {
-                // Simple newline handling
-                return text.split('\n').filter(line => line.trim()).map(line => 
-                    `<p>${line}</p>`
-                ).join('');
+            // Convert headers
+            formatted = formatted.replace(/^# (.*$)/gm, '<h1>$1</h1>');
+            formatted = formatted.replace(/^## (.*$)/gm, '<h2>$1</h2>');
+            formatted = formatted.replace(/^### (.*$)/gm, '<h3>$1</h3>');
+            
+            // Convert code blocks with language specification
+            formatted = formatted.replace(/```(\w+)?\n([\s\S]*?)```/g, function(match, lang, code) {
+                const language = lang || '';
+                return `<pre><code class="language-${language}">${code.trim()}</code></pre>`;
+            });
+            
+            // Convert inline code
+            formatted = formatted.replace(/`([^`]+)`/g, '<code>$1</code>');
+            
+            // Convert bullet points
+            const lines = formatted.split('\n');
+            let inList = false;
+            let listContent = '';
+            
+            for (let i = 0; i < lines.length; i++) {
+                if (lines[i].match(/^\* /)) {
+                    if (!inList) {
+                        inList = true;
+                        listContent = '<ul>\n';
+                    }
+                    listContent += `<li>${lines[i].replace(/^\* /, '')}</li>\n`;
+                } else {
+                    if (inList) {
+                        listContent += '</ul>\n';
+                        lines[i-1] = listContent + lines[i];
+                        inList = false;
+                    }
+                }
             }
             
-            // Proper paragraph handling
-            return paragraphs.map(para => 
-                para.trim() ? `<p>${para}</p>` : ''
-            ).join('');
+            // Handle numbered lists
+            let inOrderedList = false;
+            let orderedListContent = '';
+            
+            for (let i = 0; i < lines.length; i++) {
+                if (lines[i].match(/^\d+\. /)) {
+                    if (!inOrderedList) {
+                        inOrderedList = true;
+                        orderedListContent = '<ol>\n';
+                    }
+                    orderedListContent += `<li>${lines[i].replace(/^\d+\. /, '')}</li>\n`;
+                } else {
+                    if (inOrderedList) {
+                        orderedListContent += '</ol>\n';
+                        lines[i-1] = orderedListContent + lines[i];
+                        inOrderedList = false;
+                    }
+                }
+            }
+            
+            // Join lines and wrap paragraphs
+            formatted = lines.join('\n');
+            const paragraphs = formatted.split('\n\n');
+            
+            return paragraphs.map(para => {
+                if (para.startsWith('<') || para.trim() === '') return para;
+                return `<p>${para}</p>`;
+            }).join('');
+        }
+        
+        // Simple code highlighting
+        function highlightCodeBlocks() {
+            const codeBlocks = document.querySelectorAll('pre code');
+            codeBlocks.forEach(block => {
+                const code = block.textContent;
+                
+                // Basic syntax highlighting for common languages
+                let highlighted = code;
+                
+                if (block.className.includes('python')) {
+                    highlighted = highlightPython(code);
+                } else if (block.className.includes('javascript')) {
+                    highlighted = highlightJavaScript(code);
+                } else if (block.className.includes('html')) {
+                    highlighted = highlightHTML(code);
+                } else if (block.className.includes('css')) {
+                    highlighted = highlightCSS(code);
+                }
+                
+                block.innerHTML = highlighted;
+            });
+        }
+        
+        function highlightPython(code) {
+            return code
+                .replace(/(def|class|if|elif|else|for|while|return|import|from|as|try|except|finally|with|yield|async|await)\b/g, '<span style="color: #569cd6;">$1</span>')
+                .replace(/(True|False|None)\b/g, '<span style="color: #569cd6;">$1</span>')
+                .replace(/(\b\d+\b)/g, '<span style="color: #b5cea8;">$1</span>')
+                .replace(/(["'][^"']*["'])/g, '<span style="color: #ce9178;">$1</span>')
+                .replace(/#.*$/gm, '<span style="color: #6a9955;">$&</span>');
+        }
+        
+        function highlightJavaScript(code) {
+            return code
+                .replace(/(function|const|let|var|if|else|for|while|return|class|extends|import|export|default|try|catch|finally|async|await)\b/g, '<span style="color: #569cd6;">$1</span>')
+                .replace(/(true|false|null|undefined)\b/g, '<span style="color: #569cd6;">$1</span>')
+                .replace(/(\b\d+\b)/g, '<span style="color: #b5cea8;">$1</span>')
+                .replace(/(["'][^"']*["'])/g, '<span style="color: #ce9178;">$1</span>')
+                .replace(/\/\/.*$/gm, '<span style="color: #6a9955;">$&</span>');
+        }
+        
+        function highlightHTML(code) {
+            return code
+                .replace(/&lt;\/?([a-zA-Z][a-zA-Z0-9]*)\b/g, '<span style="color: #569cd6;">&lt;$1</span>')
+                .replace(/("[^"]*"|'[^']*')/g, '<span style="color: #ce9178;">$1</span>');
+        }
+        
+        function highlightCSS(code) {
+            return code
+                .replace(/([\.#]?[a-zA-Z][a-zA-Z0-9]*)\s*\{/g, '<span style="color: #569cd6;">$1</span> {')
+                .replace(/([a-zA-Z-]+)\s*:/g, '<span style="color: #9cdcfe;">$1</span>:')
+                .replace(/(#[0-9a-fA-F]+|\b\d+(px|em|rem|%|s)?\b)/g, '<span style="color: #b5cea8;">$1</span>');
         }
         
         // Show error
         function showError(message) {
-            error.innerHTML = message;
+            error.textContent = message;
             error.style.display = 'block';
             guide.style.display = 'none';
             
@@ -598,10 +916,6 @@
         
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            // Set placeholder
-            setRandomPlaceholder();
-            setInterval(setRandomPlaceholder, 10000);
-            
             // Enter key support
             topicInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
@@ -612,9 +926,15 @@
             // Focus input
             topicInput.focus();
             
-            // Show welcome guide initially
-            welcomeGuide.style.display = 'block';
+            // Show welcome message initially
+            welcome.style.display = 'block';
             guide.style.display = 'none';
+            
+            // Check API connection
+            checkApiConnection();
+            
+            // Update API status every 30 seconds
+            setInterval(checkApiConnection, 30000);
         });
     </script>
 </body>
